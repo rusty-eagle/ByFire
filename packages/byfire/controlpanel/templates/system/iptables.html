@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block main %}
+        {% if system.apply_iptables %}<a href="{% url 'system_iptables_reload' %}"><h3 class="bg-warning">There have been changes to the firewall, when you're ready, click here to apply them now.</h3></a>{% endif %}
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-info">
+              <div class="card-header">
+	        <h3 class="card-title">IPTable Rules <a href="{% url 'system_iptables_add' %}">(<i class="fas fa-plus"></i> add)</a></h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="table_rules" class="small table-bordered table-striped table-hover">
+                  <thead class="bg-secondary">
+                  <tr>
+		    <th></th>
+                    <th>Table</th>
+		    <th>Chain</th>
+                    <th>Protocol</th>
+                    <th>Source Address</th>
+                    <th>Source Port(s)</th>
+                    <th>Dest Address</th>
+                    <th>Dest Port(s)</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>Options</th>
+                    <th>Match</th>
+                    <th>State</th>
+		    <th>Action</th>
+		    <th>Comment</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+	          {% for rule in rules %}
+		    {% if not rule.active %}
+		      <tr style="color:grey">
+	            {% else %}
+		      <tr class="font-weight-bold">
+	            {% endif %}
+		      <td>
+		        <a href="/cp/system/iptables/edit/{{ rule.id }}"><i class="fas fa-edit"></i></a>
+			{% if rule.removable %}
+			    <a href="/cp/system/iptables/delete/{{ rule.id }}"><i class="fas fa-trash"></i></a>
+			{% endif %}
+			<i class="fas fa-chevron-up"></i>
+			<i class="fas fa-chevron-down"></i>
+		      </td>
+		      <td>{% if rule.table %}{{ rule.table }}{% endif %}</td>
+		      <td>{% if rule.chain %}{{ rule.chain }}{% endif %}</td>
+		      <td>{% if rule.protocol %}{{ rule.protocol }}{% endif %}</td>
+		      <td>{% if rule.source %}{{ rule.source }}{% endif %}</td>
+		      <td>{% if rule.sport %}{{ rule.sport }}{% endif %}</td>
+		      <td>{% if rule.destination %}{{ rule.destination }}{% endif %}</td>
+		      <td>{% if rule.port %}{{ rule.port }}{% endif %}</td>
+		      <td>{% if rule.in_iface %}{{ rule.in_iface }}{% endif %}</td>
+		      <td>{% if rule.out_iface %}{{ rule.out_iface }}{% endif %}</td>
+		      <td>{% if rule.options %}{{ rule.options }}{% endif %}</td>
+		      <td>{% if rule.match %}{{ rule.match }}{% endif %}</td>
+		      <td>{% if rule.state %}{{ rule.state }}{% endif %}</td>
+		      <td>{% if rule.action %}{{ rule.action }}{% endif %}</td>
+		      <td>{% if rule.comment %}{{ rule.comment }}{% endif %}</td>
+                    </tr>
+		  {% endfor %}
+		  </tbody>
+                  <tfoot class="bg-secondary">
+                  <tr>
+		    <th></th>
+                    <th>Table</th>
+		    <th>Chain</th>
+                    <th>Protocol</th>
+                    <th>Source Address</th>
+                    <th>Source Port(s)</th>
+                    <th>Dest Address</th>
+                    <th>Dest Port(s)</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>Options</th>
+		    <th>Match</th>
+		    <th>State</th>
+		    <th>Action</th>
+		    <th>Comment</th>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <div class="card card-danger">
+              <div class="card-header">
+	        <h3 class="card-title">Default Policies</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="table_policies" class="small table-bordered table-striped table-hover">
+                  <thead class="bg-secondary">
+                  <tr>
+		    <th></th>
+                    <th>Table</th>
+		    <th>Chain</th>
+                    <th>Policy</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+	          {% for policy in policies %}
+		    <tr class="font-weight-bold">
+		      <td>
+		        <a href="/cp/system/iptables/policy/edit/{{ policy.id }}"><i class="fas fa-edit"></i></a>
+		      </td>
+		      <td>{% if policy.table %}{{ policy.table }}{% endif %}</td>
+		      <td>{% if policy.chain %}{{ policy.chain }}{% endif %}</td>
+		      <td>{% if policy.policy %}{{ policy.policy }}{% endif %}</td>
+                    </tr>
+		  {% endfor %}
+		  </tbody>
+                  <tfoot class="bg-secondary">
+                  <tr>
+		    <th></th>
+                    <th>Table</th>
+		    <th>Chain</th>
+                    <th>Policy</th>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+	  </div>
+	  <!-- /.col-12 -->
+	</div>
+	<!-- /.row -->
+{% endblock main %}
+
+{% block scripts %}
+<script>
+  $(function () {
+    $("#table_policies").DataTable({
+      "responsive": true,
+      "autoWidth": true,
+      "pageLength": 50,
+      //"searching": false,
+      "paging": false,
+    });
+    $('#table_rules').DataTable({
+      "pageLength": 50,
+      "paging": true,
+      "lengthChange": true,
+      //"searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock scripts %}

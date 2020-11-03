@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block main %}
+<div class="card">
+	<div class="card-header bg-info">
+		<div class="card-title">
+			<h3>byfire, uwsgi</h3>
+		</div>
+	</div>
+	<div>
+		<textarea cols="90%" rows='15'>
+  			{{ byfire }}
+		</textarea>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-header bg-info">
+		<div class="card-title">
+			<h3>dnsmasq</h3>
+		</div>
+	</div>
+	<div>
+		<textarea cols="90%" rows='15'>
+  			{{ dnsmasq }}
+		</textarea>
+	</div>
+</div>
+{% endblock main %}

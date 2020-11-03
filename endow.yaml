@@ -1,0 +1,173 @@
+---
+- name: Configuring ByFire
+  hosts: byfire
+  become: yes
+  become_user: root
+  tasks:
+    - name: Updating Apt Cache
+      apt:
+        update_cache: 'True'
+
+    - name: Minimizing packages
+      apt:
+        name:
+        - cloud-init
+        - snapd
+        - telnet
+        - bc
+        - eject
+        - man-db
+        state: absent
+
+    - name: Installing important stuff
+      apt:
+        name:
+        - iptables
+        - iptables-persistent
+        - irqbalance
+        - ethtool
+        - numactl
+        - python3-bpfcc
+        - dnsmasq
+        - nginx
+        - python3-pip
+        - python3-setuptools
+        - python3-dev
+        - unattended-upgrades
+        - gcc
+        state: present
+
+    - name: Pip install uwsgi
+      pip:
+        name:
+        - uwsgi
+        - django
+        - pyyaml
+        - requests
+
+    - name: Enabling ip forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+    - name: Checking path for uname
+      stat:
+        path: /usr/bin/uname
+      register: stat_uname
+    - name: Setting uname symlink
+      file:
+        src: /bin/uname
+        dest: /usr/bin/uname
+        state: link
+      when: stat_uname.stat.exists == false
+
+    - name: Checking path for systemctl
+      stat:
+        path: /usr/bin/systemctl
+      register: stat_systemctl
+    - name: Setting systemctl symlink
+      file:
+        src: /bin/systemctl
+        dest: /usr/bin/systemctl
+        state: link
+      when: stat_systemctl.stat.exists == false
+
+    - name: Checking path for ip command
+      stat:
+        path: /usr/sbin/ip
+      register: stat_ip
+    - name: Setting ip symlink
+      file:
+        src: /sbin/ip
+        dest: /usr/sbin/ip
+        state: link
+      when: stat_ip.stat.exists == false
+
+    - name: Checking path for iptables
+      stat:
+        path: /usr/sbin/iptables
+      register: stat_iptables
+    - name: Setting iptables symlink
+      file:
+        src: /sbin/iptables
+        dest: /usr/sbin/iptables
+        state: link
+      when: stat_iptables.stat.exists == false
+
+    - name: Copying packages to target
+      copy:
+        src: packages
+        dest: /opt/
+
+    - name: Changing ownership of /opt/packages/byfire to www-data
+      file:
+        path: /opt/packages/byfire
+        owner: www-data
+        group: www-data
+        recurse: yes
+
+    - name: Create dhcp lease directory
+      file:
+        path: /var/lib/dnsmasq
+        state: directory
+    - name: Create iptables save directory
+      file:
+        path: /etc/iptables
+        state: directory
+
+    - name: Copy Nginx config
+      copy:
+        src: config/nginx-default
+        dest: /etc/nginx/sites-available/default
+    - name: Copy htpasswd default
+      copy:
+        src: config/htpasswd
+        dest: /etc/nginx/htpasswd
+    - name: Copy in UWSGI config
+      copy:
+        src: config/byfire_uwsgi.ini
+        dest: /etc/nginx/byfire_uwsgi.ini
+    - name: Copy in uWSGI Systemd Service file
+      copy:
+        src: config/byfire.service
+        dest: /etc/systemd/system/byfire.service
+
+    - name: Copy in dnsmasq config
+      copy:
+        src: config/dnsmasq.conf
+        dest: /etc/dnsmasq.conf
+
+    - name: Enable byfire uwsgi
+      systemd:
+        daemon_reload: yes
+        name: byfire.service
+        enabled: yes
+        state: restarted
+
+    - name: Nginx restart
+      systemd:
+        name: nginx
+        state: restarted
+
+    - name: Disabling unimportant services
+      systemd:
+        name: "{{ item }}"
+        enabled: no
+      with_items:
+        - 'systemd-resolved'
+    - name: Enabling important services
+      systemd:
+        name: "{{ item }}"
+        enabled: yes
+      with_items:
+        - 'irqbalance'
+        - 'dnsmasq'
+
+    - name: Removing compiler
+      apt:
+        name:
+        - gcc
+        state: absent

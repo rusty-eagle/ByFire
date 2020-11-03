@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="card">
+  <div class="card-header bg-info">
+    <div class="card-title">
+      <h3>Interrupts: {{ type }}</h3>
+    </div>
+    <input type="hidden" id="type" value="{{ type }}">
+  </div>
+  <div class="card-body">
+    <textarea id="irqs" cols="80" rows="25"></textarea>
+  </div>
+</div>
+{% endblock main %}
+
+{% block scripts %}
+<script>
+  irq_type = document.getElementById('type').value;
+  function get_irq() {
+    $.get("/cp/system/interrupts/update/" + irq_type, function(data) {
+      $('#irqs').html(data.data);
+    });
+  }
+  setInterval(get_irq, 2000);
+</script>
+{% endblock scripts %}

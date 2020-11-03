@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block main %}
+{% if system.apply_dnsmasq %}
+  <h3><a href="{% url 'build_reload_dnsmasq' %}">Click here to apply DHCP/DNS Updates</a></h3>
+{% endif %}
+<div class="card">
+  <div class="card-header bg-info">
+    <div class="card-title">
+      <h3>Host Configuration</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form action="" method="POST">
+      {% csrf_token %}
+      <table>
+        {{ form.as_table }}
+      </table>
+      <input type="submit" value="Update" class="btn btn-primary">
+    </form>
+    <hr/>
+    System Information<br/>
+    <pre>{{ sys_info }}</pre>
+    <hr/>
+    Currently logged in users:<br/>
+    <pre>{{ users }}</pre>
+    <hr/>
+    Processes:<br/>
+    <pre>{{ processes }}</pre>
+  </div>
+</div>
+{% endblock main %}

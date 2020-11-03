@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block main %}
+{% if system.apply_dnsmasq %}
+  <h3><a href="{% url 'build_reload_dnsmasq' %}">Click here to apply DHCP/DNS Updates</a></h3>
+{% endif %}
+<div class="card">
+  <div class="card-header bg-info">
+    <div class="card-title">
+      <h3>
+        <a href="{% url 'service_dhcp_add' %}"><i class="fas fa-plus"></i></a>
+        Subnets
+      </h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <table id="subnet_table" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Zone</th>
+          <th>Network</th>
+          <th>Start</th>
+          <th>End</th>
+	  <th>Gateway</th>
+          <th>Lease Time</th>
+          <th>Minute/Hour</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for subnet in subnets %}
+          <tr>
+            <td>{{ subnet.zone_name }}</td>
+            <td>{{ subnet.network }}</td>
+            <td>{{ subnet.start }}</td>
+            <td>{{ subnet.end }}</td>
+            <td>{{ subnet.gateway }}</td>
+            <td>{{ subnet.lease_time }}</td>
+            <td>{{ subnet.min_hour }}</td>
+    	<td><a href="/cp/service/dhcp/edit/{{ subnet.id }}">edit</a> / <a href="/cp/service/dhcp/delete/{{ subnet.id }}">delete</a></td>
+          <tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Zone</th>
+          <th>Network</th>
+          <th>Start</th>
+          <th>End</th>
+	  <th>Gateway</th>
+          <th>Lease Time</th>
+          <th>Minute/Hour</th>
+          <th></th>
+        </tr>
+      <tfoot>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header bg-info">
+    <div class="card-title">
+      <h3>
+        DHCP Leases
+      </h3>
+    </div>
+  </div>
+  <div class="card-body">
+  </div>
+</div>
+{% endblock main %}
+
+{% block scripts %}
+<script>
+  $(function() {
+    $("#subnet_table").DataTable({
+      'responsive': true,
+    });
+  });
+</script>
+{% endblock scripts %}

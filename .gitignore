@@ -1,0 +1,14 @@
+ansible/templates/installed.img
+hosts
+testing/
+isos/
+disks/
+NOTES
+tags
+UPDATE.sh
+packages/bin
+packages/fastdrop
+packages/fastforward
+packages/fastroute
+packages/suspiciouspackets
+__pycache__/
