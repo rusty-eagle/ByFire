@@ -1,4 +1,4 @@
 #!/bin/sh
 iptables-save -c > /etc/iptables/rules.v4
-iptables-save -c > /etc/iptables/rules.v6
+ip6tables-save -c > /etc/iptables/rules.v6
 exit 0

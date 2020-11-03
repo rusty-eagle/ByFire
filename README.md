@@ -45,3 +45,4 @@ The default login is admin/byfire.  To change the password, currently you must u
 * Automatically refresh blocklists (some lists have syntax errors, so they need to be parsed properly)
 * Add the FastDrop XDP/BPF tool
 * Add WireGuard support
+* Solidify IPv6 Support
