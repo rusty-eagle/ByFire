@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="card card-info">
+  <div class="card-header">
+    <h3 class="card-title"><h3>Routes</h3>
+    <div class="card-tools">
+    </div>
+    <!-- /.card-tools -->
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+	  <!-- <textarea cols="80" rows="10">{{ routes }}</textarea> -->
+    <ul>
+      {% for route in routes %}
+        {% if route != "" %}
+          <li>{{ route }}</li>
+	{% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+  <!-- /.card-body -->
+</div>
+<!-- /.card -->
+
+{% endblock main %}

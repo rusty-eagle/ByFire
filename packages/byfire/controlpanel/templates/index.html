@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="row">
+  <div class="card col-lg-6 col-xs-6">
+    <div class="card-header bg-info">
+      WAN Speed
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="col-xs-6">Outbound</th>
+	    <th class="col-xs-6">Inbound</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span id="wan_speed_out"></span><br/>
+	    </td>
+            <td>
+              <span id="wan_speed_in"></span>
+	    </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card col-lg-6 col-xs-6">
+    <div class="card-header bg-info">
+      LAN Speed
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="col-xs-6">Outbound</th>
+            <th class="col-xs-6">Inbound</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span id="lan_speed_out"></span><br/>
+	    </td>
+            <td>
+              <span id="lan_speed_in"></span>
+	    </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock main %}
+
+{% block scripts %}
+<script>
+  var wan_iface = "eth0";
+  var lan_iface = "enxa0cec8d99ef5";
+
+  var wan_out_old = 0;
+  var wan_out_cur = 0;
+  var wan_in_old = 0;
+  var wan_in_cur = 0;
+
+  var lan_out_old = 0;
+  var lan_out_cur = 0;
+  var lan_in_old = 0;
+  var lan_in_cur = 0;
+
+  //var BPS = 1048576; //mbps
+  var BPS = 1024; //kbps
+  var BPSS = "/Kbps";
+  function get_throughput()
+  {
+    $.get("/cp/system/interfaces/txrx", function(data) {
+      wan_out_cur = data[wan_iface].out;
+      wan_in_cur = data[wan_iface].in;
+      lan_out_cur = data[lan_iface].out;
+      lan_in_cur = data[lan_iface].in;
+
+      wan_speed_out.innerHTML = ((wan_out_cur - wan_out_old) / BPS).toFixed(2) + BPSS;
+      wan_speed_in.innerHTML = ((wan_in_cur - wan_in_old) / BPS).toFixed(2) + BPSS;
+      lan_speed_out.innerHTML = ((lan_out_cur - lan_out_old) / BPS).toFixed(2) + BPSS;
+      lan_speed_in.innerHTML = ((lan_in_cur - lan_in_old) / BPS).toFixed(2) + BPSS;
+
+      wan_out_old = wan_out_cur;
+      wan_in_old = wan_in_cur;
+      lan_out_old = lan_out_cur;
+      lan_in_old = lan_in_cur;
+    });
+  }
+  setInterval(get_throughput, 1000);
+</script>
+{% endblock %}

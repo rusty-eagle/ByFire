@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+          {% if iface_update %}
+	  <a href="{% url 'system_interfaces_apply' %}"><h3 class="bg-warning">Click here to apply Interface changes</h3></a>
+          {% endif %}
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card card-danger">
+      <div class="card-header">
+	      <h3 class="card-title">Wide Area Network: {{ wan.interface.name }}<a href="/cp/system/interfaces/edit/{{ wan.interface.id }}"> (<i class="fas fa-edit"></i> edit config)</a></h3>
+        <div class="card-tools">
+        </div>
+        <!-- /.card-tools -->
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+
+	<input type="hidden" id="wan_iface" value="{{ wan.interface.name }}">
+
+	<table id="wan_table" class="table table-bordered table-hover">
+	  <tr>
+  	    <td>IPv4 Address</td><td><span id="wan_ipv4"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv4 Netmask</td><td><span id="wan_ipv4_mask"></span></td>
+	  </tr>
+	  <tr>
+            <td>IPv4 Gateway</td><td><span id="wan_ipv4_gw"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv4 Broadcast</td><td><span id="wan_ipv4_bc"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv6 Address</td><td><span id="wan_ipv6"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv6 Netmask</td><td><span id="wan_ipv6_mask"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv6 Gateway</td><td><span id="wan_ipv6_gw"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv6 Broadcast</td><td><span id="wan_ipv6_bc"></span></td>
+	  </tr>
+	  <tr>
+	    <td>MTU</td><td><span id="wan_mtu"></span></td>
+	  </tr>
+	  <tr>
+            <td>MAC</td><td><span id="wan_mac"></span></td>
+	  </tr>
+	  <tr>
+	    <td>DNS Servers</td><td><span id="wan_dns"></span></td>
+	  </tr>
+	  <tr>
+	    <td>RX</td><td><span id="wan_rx"></span></td>
+	  </tr>
+	  <tr>
+	    <td>TX</td><td><span id="wan_tx"></span></td>
+	  </tr>
+	</table>
+
+	<hr/>
+	<div class="card">
+          <div class="card-header bg-warning">
+	    Change WAN Inteface
+          </div>
+	  <div class="card-body">
+	    <form action="{% url 'system_interfaces_wan' %}" method="POST">
+	      {% csrf_token %}
+	      <table>
+	        {{ wanform.as_table }}
+	      </table>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+	  </div>
+	  <!-- /.card-body -->
+	</div>
+	<!-- /.card -->
+
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer">
+      </div>
+      <!-- /.card-footer -->
+    </div>
+    <!-- /.card -->
+    </div>
+    <!-- /.col-sm-6 -->
+    <div class="col-sm-6">
+    <div class="card card-primary">
+      <div class="card-header">
+	<h3 class="card-title">Local Area Network: {{ lan.interface.name }}<a href="/cp/system/interfaces/edit/{{ lan.interface.id }}"> (<i class="fas fa-edit"></i>edit config)</a></h3>
+	<br/>
+	<small>(used for DNS & DHCP Services)</small>
+        <div class="card-tools">
+        </div>
+        <!-- /.card-tools -->
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+
+	<input type="hidden" id="lan_iface" value="{{ lan.interface.name }}">
+
+	<table id="lan_table" class="table table-bordered table-hover">
+	  <tr>
+  	    <td>IPv4 Address</td><td><span id="lan_ipv4"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv4 Netmask</td><td><span id="lan_ipv4_mask"></span></td>
+	  </tr>
+	  <tr>
+            <td>IPv4 Gateway</td><td><span id="lan_ipv4_gw"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv4 Broadcast</td><td><span id="lan_ipv4_bc"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv6 Address</td><td><span id="lan_ipv6"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv6 Netmask</td><td><span id="lan_ipv6_mask"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv6 Gateway</td><td><span id="lan_ipv6_gw"></span></td>
+	  </tr>
+	  <tr>
+	    <td>IPv6 Broadcast</td><td><span id="lan_ipv6_bc"></span></td>
+	  </tr>
+	  <tr>
+	    <td>MTU</td><td><span id="lan_mtu"></span></td>
+	  </tr>
+	  <tr>
+	    <td>MAC</td><td><span id="lan_mac"></span></td>
+	  </tr>
+	  <tr>
+	    <td>DNS Servers</td><td><span id="lan_dns"></span></td>
+	  </tr>
+	  <tr>
+	    <td>RX</td><td><span id="lan_rx"></span></td>
+	  </tr>
+	  <tr>
+	    <td>TX</td><td><span id="lan_tx"></span></td>
+	  </tr>
+	</table>
+
+	<hr/>
+	<div class="card">
+          <div class="card-header bg-warning">
+	    Change LAN Inteface
+          </div>
+	  <div class="card-body">
+	    <form action="{% url 'system_interfaces_lan' %}" method="POST">
+	      {% csrf_token %}
+	      <table>
+	        {{ lanform.as_table }}
+	      </table>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+	  </div>
+	  <!-- /.card-body -->
+	</div>
+	<!-- /.card -->
+
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer">
+      </div>
+      <!-- /.card-footer -->
+    </div>
+    <!-- /.card -->
+  </div>
+  <!-- /.col-sm-6 -->
+</div>
+<!-- /.row ..>
+{% endblock main %}
+
+{% block scripts %}
+<script>
+  wan_iface = document.getElementById('wan_iface').value;
+  lan_iface = document.getElementById('lan_iface').value;
+
+  function get_data()
+  {
+    // WAN IPv4 Address
+    $.get("/cp/system/interfaces/" + wan_iface + "/ipv4", function(data) {
+      $('#wan_ipv4').html(data.data);
+    });
+    // WAN IPv4 Netmask
+    $.get("/cp/system/interfaces/" + wan_iface + "/ipv4_mask", function(data) {
+      $('#wan_ipv4_mask').html(data.data);
+    });
+    // WAN IPv4 Broadcast
+    $.get("/cp/system/interfaces/" + wan_iface + "/ipv4_bc", function(data) {
+      $('#wan_ipv4_bc').html(data.data);
+    });
+    // WAN IPv4 Gateway
+    $.get("/cp/system/interfaces/" + wan_iface + "/ipv4_gw", function(data) {
+      $('#wan_ipv4_gw').html(data.data);
+    });
+    // WAN IPv6 Address
+    $.get("/cp/system/interfaces/" + wan_iface + "/ipv6", function(data) {
+      $('#wan_ipv6').html(data.data);
+    });
+    // WAN IPv6 Netmask
+    $.get("/cp/system/interfaces/" + wan_iface + "/ipv6_mask", function(data) {
+      $('#wan_ipv6_mask').html(data.data);
+    });
+    // WAN MTU
+    $.get("/cp/system/interfaces/" + wan_iface + "/mtu", function(data) {
+      $('#wan_mtu').html(data.data);
+    });
+    $.get("/cp/system/interfaces/" + wan_iface + "/mac", function(data) {
+      $('#wan_mac').html(data.data);
+    });
+
+    // LAN IPv4 Address
+    $.get("/cp/system/interfaces/" + lan_iface + "/ipv4", function(data) {
+      $('#lan_ipv4').html(data.data);
+    });
+    // LAN IPv4 Netmask
+    $.get("/cp/system/interfaces/" + lan_iface + "/ipv4_mask", function(data) {
+      $('#lan_ipv4_mask').html(data.data);
+    });
+    // LAN IPv4 Broadcast
+    $.get("/cp/system/interfaces/" + lan_iface + "/ipv4_bc", function(data) {
+      $('#lan_ipv4_bc').html(data.data);
+    });
+    // LAN IPv6 Address
+    $.get("/cp/system/interfaces/" + lan_iface + "/ipv6", function(data) {
+      $('#lan_ipv6').html(data.data);
+    });
+    // LAN IPv6 Netmask
+    $.get("/cp/system/interfaces/" + lan_iface + "/ipv6_mask", function(data) {
+      $('#lan_ipv6_mask').html(data.data);
+    });
+    // LAN MTU
+    $.get("/cp/system/interfaces/" + lan_iface + "/mtu", function(data) {
+      $('#lan_mtu').html(data.data);
+    });
+    $.get("/cp/system/interfaces/" + lan_iface + "/mac", function(data) {
+      $('#lan_mac').html(data.data);
+    });
+  }
+
+  function get_throughput()
+  {
+    $.get("/cp/system/interfaces/txrx", function(data) {
+      wan_rx.innerHTML =  (data[wan_iface].in / 1073741824).toFixed(2) + " GB";
+      wan_tx.innerHTML =  (data[wan_iface].out / 1073741824).toFixed(2) + " GB";
+      lan_rx.innerHTML =  (data[lan_iface].in / 1073741824).toFixed(2) + " GB";
+      lan_tx.innerHTML =  (data[lan_iface].out / 1073741824).toFixed(2) + " GB";
+    });
+  }
+
+  get_data();
+  setInterval(get_throughput, 2000);
+</script>
+{% endblock scripts %}

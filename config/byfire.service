@@ -1,0 +1,14 @@
+[Unit]
+Description=ByFire uWSGI Emperor
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/uwsgi --ini /etc/nginx/byfire_uwsgi.ini --uid root --gid root
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

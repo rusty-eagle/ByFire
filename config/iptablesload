@@ -1,0 +1,4 @@
+#!/bin/sh
+iptables-restore < /etc/iptables/rules.v4
+iptables-restore < /etc/iptables/rules.v6
+exit 0

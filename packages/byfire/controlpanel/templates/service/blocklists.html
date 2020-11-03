@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block main %}
+{% if system.apply_dnsmasq %}
+  <h3><a href="{% url 'build_reload_dnsmasq' %}">Click here to apply DHCP/DNS Updates</a></h3>
+{% endif %}
+
+<div class="card">
+  <div class="card-header bg-info">
+    <div class="card-title">
+      <h3>Ad Blocklists (<a href="{% url 'service_blocklists_add' %}"><i class="fas fa-plus"></i> add</a>)</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Active</th>
+          <th>Filename</th>
+          <th>URL</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for l in lists %}
+        <tr>
+          <td>{{ l.active }}</td>
+          <td>{{ l.filename }}</td>
+          <td>{{ l.url }}</td>
+          <td>
+            <a href="/cp/service/blocklists/edit/{{ l.id }}">
+    	  <i class="fas fa-edit"></i>
+            </a>
+    	<a href="/cp/service/blocklists/delete/{{ l.id }}">
+    	  <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock main %}
