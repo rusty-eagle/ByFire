@@ -102,6 +102,11 @@
         src: packages
         dest: /opt/
 
+    - name: Copying logrotate file
+      copy:
+        src: config/rotate-dnsmasq
+        dest: /etc/logrotate.d/
+
     - name: Changing ownership of /opt/packages/byfire to www-data
       file:
         path: /opt/packages/byfire
